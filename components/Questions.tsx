@@ -18,6 +18,7 @@ const Questions = () => {
   const [isCheck, setIsCheck] = useState(false);
   const [isCorrect, setIsCorrect] = useState(false);
   const [index, setIndex] = useState(0);
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   const { question, incorrect_answers, correct_answer } =
     state.questions && state.questions[state.index]
@@ -42,6 +43,7 @@ const Questions = () => {
 
   const handleAnswerSelection = (answer: string, index: number) => {
     setSelectedAnswer(answer);
+    setSelectedIndex(index);
     const sentence = modifiedQuestion.split(" ");
     sentence[1] = `<span>${answer}</span>`;
     setModifiedQuestion(sentence.join(" "));
@@ -58,7 +60,11 @@ const Questions = () => {
       {answers.slice(start, end).map((answer, index) => (
         <Text
           key={`${start}-${index}`}
-          className="bg-gray-300 py-3 px-5 mx-3 mb-4 rounded-xl font-semibold"
+          className={`${
+            selectedIndex === start + index
+              ? "bg-gray-400 text-gray-400"
+              : "bg-gray-200 text-gray-900"
+          } py-3 px-5 mx-3 mb-4 rounded-full font-semibold`}
           onPress={() => handleAnswerSelection(answer, start + index)}
         >
           {answer}
@@ -77,6 +83,7 @@ const Questions = () => {
       }
     });
     setSelectedAnswer("");
+    setSelectedIndex(null);
     setIsCheck(false);
   };
 
@@ -90,17 +97,43 @@ const Questions = () => {
 
   const tagsStyles = {
     span: {
-      color: "#000",
-      backgroundColor: "#d1d1d1",
+      color: `${selectedAnswer && !isCheck ? "#222" : "#fff"}`,
+      backgroundColor: `${
+        selectedAnswer && !isCheck
+          ? "#fff"
+          : isCheck && isCorrect
+          ? "rgb(74 222 128)"
+          : "rgb(248 113 113)"
+      }`,
       padding: 10,
       marginHorizontal: 10,
       marginBottom: 10,
       borderRadius: 10,
     },
-    body: { color: "#fff", lineHeight: 22, fontWeight: "300" as "300" },
+    body: { color: "#fff", lineHeight: 22, fontWeight: "400" as "400" },
   };
 
-  const buttonStyle = `py-[20] px-[100] mx-3 mb-4 rounded-full font-semibold uppercase`;
+  const buttonStyle = `py-[20] px-[100] mx-3 mb-4 rounded-full font-semibold uppercase shadow-2xl`;
+
+  if (state.loading) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text className="text-gray-50 font-semibold text-lg leading-10 tracking-tight">
+          Loading...
+        </Text>
+      </View>
+    );
+  }
+
+  if (!state.loading && state.questions.length === 0) {
+    return (
+      <View className="flex-1 justify-center items-center">
+        <Text className="text-gray-50 font-semibold text-lg leading-10 tracking-tight">
+          No questions found!!
+        </Text>
+      </View>
+    );
+  }
 
   return (
     <>
