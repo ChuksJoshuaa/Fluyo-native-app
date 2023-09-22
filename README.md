@@ -24,7 +24,7 @@ This is a Quiz App built with React Native. It allows users to answer multiple-c
 To install the app, follow these steps:
 
 1. Clone the repository: `git clone git@github.com:ChuksJoshuaa/quiz-native-app.git`
-2. Navigate into the project directory: `cd quiz-app`
+2. Navigate into the project directory: `cd quiz-native-app`
 3. Install the dependencies: `npm install`
 4. Start the app: `npm start`
 
